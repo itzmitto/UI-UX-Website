@@ -35,8 +35,8 @@ function Sidebar() {
   return (
     <aside className="fixed bottom-0 left-0 top-16 hidden w-64 border-r border-zinc-200 bg-white lg:block">
       <div className="h-full overflow-y-auto px-5 py-8">
-        <div className="mb-7">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+        <div className="mb-8">
+          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
             Overview
           </p>
 
@@ -56,7 +56,7 @@ function Sidebar() {
         </div>
 
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
             Components
           </p>
 

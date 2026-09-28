@@ -1,89 +1,118 @@
-const categories = [
-  {
-    title: "Buttons",
-    components: ["Primary Button", "Secondary Button", "Icon Button"],
-  },
-  {
-    title: "Inputs",
-    components: ["Text Input", "Search Input", "Password Input"],
-  },
-  {
-    title: "Cards",
-    components: ["Basic Card", "Profile Card", "Product Card"],
-  },
-  {
-    title: "Forms",
-    components: ["Login Form", "Contact Form", "Newsletter Form"],
-  },
-  {
-    title: "Navigation",
-    components: ["Navbar", "Tabs", "Breadcrumbs"],
-  },
-  {
-    title: "Feedback",
-    components: ["Alert", "Toast", "Badge"],
-  },
-  {
-    title: "Overlays",
-    components: ["Modal", "Dropdown", "Tooltip"],
-  },
-];
+import { useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import ComponentCard from "../components/library/ComponentCard";
+import ComponentModal from "../components/library/ComponentModal";
+import { components } from "../data/components";
+import type { UIComponent } from "../types/component";
 
 function Components() {
+  const { category } = useParams();
+
+  const [selectedComponent, setSelectedComponent] =
+    useState<UIComponent | null>(null);
+
+  const filteredComponents = useMemo(() => {
+    if (!category) {
+      return components;
+    }
+
+    return components.filter(
+      (component) =>
+        component.category.toLowerCase() === category.toLowerCase(),
+    );
+  }, [category]);
+
+  const pageTitle = category
+    ? category.charAt(0).toUpperCase() + category.slice(1)
+    : "All Components";
+
+  const groupedComponents = useMemo(() => {
+    return filteredComponents.reduce<Record<string, UIComponent[]>>(
+      (groups, component) => {
+        if (!groups[component.category]) {
+          groups[component.category] = [];
+        }
+
+        groups[component.category].push(component);
+
+        return groups;
+      },
+      {},
+    );
+  }, [filteredComponents]);
+
   return (
-    <div>
-      <div className="mb-12">
-        <p className="mb-2 text-sm font-medium text-blue-600">Components</p>
+    <>
+      <div>
+        <div className="mb-12">
+          <p className="mb-2 text-sm font-medium text-blue-600">
+            Components
+          </p>
 
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-950">
-          All Components
-        </h1>
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-950">
+            {pageTitle}
+          </h1>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">
-          Explore reusable React and Tailwind CSS components. Select a component
-          to view its preview, TypeScript code and Tailwind styling.
-        </p>
-      </div>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">
+            Reusable React, TypeScript and Tailwind CSS components.
+            Click on a component to inspect its code and responsive preview.
+          </p>
+        </div>
 
-      <div className="space-y-14">
-        {categories.map((category) => (
-          <section key={category.title}>
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-zinc-950">
-                {category.title}
-              </h2>
+        {filteredComponents.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 px-6 py-20 text-center">
+            <h2 className="text-lg font-semibold text-zinc-950">
+              No components yet
+            </h2>
 
-              <button
-                type="button"
-                className="text-sm font-medium text-zinc-500 transition hover:text-zinc-950"
-              >
-                View all
-              </button>
-            </div>
+            <p className="mt-2 text-sm text-zinc-500">
+              Components for this category will be added later.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-14">
+            {Object.entries(groupedComponents).map(
+              ([categoryName, categoryComponents]) => (
+                <section key={categoryName}>
+                  <div className="mb-5 flex items-end justify-between">
+                    <div>
+                      <h2 className="text-xl font-semibold text-zinc-950">
+                        {categoryName}
+                      </h2>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {category.components.map((component) => (
-                <button
-                  key={component}
-                  type="button"
-                  className="group text-left"
-                >
-                  <div className="flex h-48 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 transition duration-200 group-hover:border-zinc-300 group-hover:bg-zinc-100">
-                    <div className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm">
-                      {component}
+                      <p className="mt-1 text-sm text-zinc-500">
+                        Explore available {categoryName.toLowerCase()}.
+                      </p>
                     </div>
+
+                    <span className="text-sm text-zinc-400">
+                      {categoryComponents.length} components
+                    </span>
                   </div>
 
-                  <p className="mt-3 text-sm font-medium text-zinc-900">
-                    {component}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </section>
-        ))}
+                  <div className="grid grid-cols-1 gap-x-5 gap-y-8 md:grid-cols-2 xl:grid-cols-3">
+                    {categoryComponents.map((component) => (
+                      <ComponentCard
+                        key={component.id}
+                        component={component}
+                        onClick={() =>
+                          setSelectedComponent(component)
+                        }
+                      />
+                    ))}
+                  </div>
+                </section>
+              ),
+            )}
+          </div>
+        )}
       </div>
-    </div>
+
+      <ComponentModal
+        component={selectedComponent}
+        onClose={() => setSelectedComponent(null)}
+      />
+    </>
   );
 }
 
