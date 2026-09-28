@@ -8,14 +8,14 @@ export const buttons: UIComponent[] = [
     category: "Buttons",
 
     preview: (
-      <button className="rounded-lg bg-zinc-950 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800">
+      <button className="rounded-lg bg-blue-300 px-5 py-2.5 text-sm font-medium text-zinc-950 transition hover:bg-blue-400">
         Get started
       </button>
     ),
 
     typescript: `function PrimaryButton() {
   return (
-    <button className="rounded-lg bg-zinc-950 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800">
+    <button className="rounded-lg bg-blue-300 px-5 py-2.5 text-sm font-medium text-zinc-950 transition hover:bg-blue-400">
       Get started
     </button>
   );
@@ -24,31 +24,31 @@ export const buttons: UIComponent[] = [
 export default PrimaryButton;`,
 
     tailwind: `rounded-lg
-bg-zinc-950
+bg-blue-300
 px-5
 py-2.5
 text-sm
 font-medium
-text-white
+text-zinc-950
 transition
-hover:bg-zinc-800`,
+hover:bg-blue-400`,
   },
 
   {
     id: "secondary-button",
     name: "Secondary Button",
-    description: "Secondary action with a subtle border.",
+    description: "Secondary action with a subtle blue border.",
     category: "Buttons",
 
     preview: (
-      <button className="rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-800 transition hover:bg-zinc-100">
+      <button className="rounded-lg border border-blue-300 bg-white px-5 py-2.5 text-sm font-medium text-blue-700 transition hover:bg-blue-50 hover:border-blue-400">
         Learn more
       </button>
     ),
 
     typescript: `function SecondaryButton() {
   return (
-    <button className="rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-800 transition hover:bg-zinc-100">
+    <button className="rounded-lg border border-blue-300 bg-white px-5 py-2.5 text-sm font-medium text-blue-700 transition hover:bg-blue-50 hover:border-blue-400">
       Learn more
     </button>
   );
@@ -58,15 +58,16 @@ export default SecondaryButton;`,
 
     tailwind: `rounded-lg
 border
-border-zinc-300
+border-blue-300
 bg-white
 px-5
 py-2.5
 text-sm
 font-medium
-text-zinc-800
+text-blue-700
 transition
-hover:bg-zinc-100`,
+hover:bg-blue-50
+hover:border-blue-400`,
   },
 
   {
@@ -79,7 +80,7 @@ hover:bg-zinc-100`,
       <button
         type="button"
         aria-label="Add item"
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-950 text-xl text-white transition hover:scale-105 hover:bg-zinc-800"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-300 text-xl font-medium text-zinc-950 transition hover:scale-105 hover:bg-blue-400"
       >
         +
       </button>
@@ -90,7 +91,7 @@ hover:bg-zinc-100`,
     <button
       type="button"
       aria-label="Add item"
-      className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-950 text-xl text-white transition hover:scale-105 hover:bg-zinc-800"
+      className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-300 text-xl font-medium text-zinc-950 transition hover:scale-105 hover:bg-blue-400"
     >
       +
     </button>
@@ -105,11 +106,12 @@ w-11
 items-center
 justify-center
 rounded-full
-bg-zinc-950
+bg-blue-300
 text-xl
-text-white
+font-medium
+text-zinc-950
 transition
 hover:scale-105
-hover:bg-zinc-800`,
+hover:bg-blue-400`,
   },
 ];

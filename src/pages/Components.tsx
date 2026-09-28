@@ -1,15 +1,15 @@
-import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useMemo } from "react";
+import { Link, useParams } from "react-router-dom";
 import ComponentCard from "../components/library/ComponentCard";
-import ComponentModal from "../components/library/ComponentModal";
-import { components } from "../data/components";
-import type { UIComponent } from "../types/component";
+import { useComponentLibrary } from "../context/ComponentLibraryContext";
+import { categories, components, slugifyCategory } from "../data/components";
 
 function Components() {
   const { category } = useParams();
 
-  const [selectedComponent, setSelectedComponent] =
-    useState<UIComponent | null>(null);
+  const { openComponent } = useComponentLibrary();
+
+  const activeCategory = categories.find((item) => item.slug === category);
 
   const filteredComponents = useMemo(() => {
     if (!category) {
@@ -17,102 +17,85 @@ function Components() {
     }
 
     return components.filter(
-      (component) =>
-        component.category.toLowerCase() === category.toLowerCase(),
+      (component) => slugifyCategory(component.category) === category,
     );
   }, [category]);
 
-  const pageTitle = category
-    ? category.charAt(0).toUpperCase() + category.slice(1)
-    : "All Components";
+  const pageTitle = activeCategory ? activeCategory.name : "All Components";
 
-  const groupedComponents = useMemo(() => {
-    return filteredComponents.reduce<Record<string, UIComponent[]>>(
-      (groups, component) => {
-        if (!groups[component.category]) {
-          groups[component.category] = [];
-        }
+  if (filteredComponents.length === 0) {
+    return (
+      <div className="py-20 text-center">
+        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-white">
+          No components found
+        </h1>
 
-        groups[component.category].push(component);
+        <p className="mt-2 text-sm text-zinc-500">
+          This category does not contain any components yet.
+        </p>
 
-        return groups;
-      },
-      {},
+        <Link
+          to="/"
+          className="mt-5 inline-flex rounded-lg bg-blue-300 px-4 py-2 text-sm font-medium text-zinc-950 transition hover:bg-blue-400"
+        >
+          Back to components
+        </Link>
+      </div>
     );
-  }, [filteredComponents]);
+  }
 
   return (
-    <>
-      <div>
-        <div className="mb-12">
-          <p className="mb-2 text-sm font-medium text-blue-600">
+    <div className="pb-24">
+      <div className="mb-8">
+        <div className="flex items-center gap-2 text-[11px] text-zinc-400">
+          <Link
+            to="/"
+            className="transition hover:text-blue-600 dark:hover:text-blue-300"
+          >
             Components
-          </p>
+          </Link>
 
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-950">
-            {pageTitle}
-          </h1>
+          <span>/</span>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">
-            Reusable React, TypeScript and Tailwind CSS components.
-            Click on a component to inspect its code and responsive preview.
-          </p>
+          <span>{pageTitle}</span>
         </div>
 
-        {filteredComponents.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 px-6 py-20 text-center">
-            <h2 className="text-lg font-semibold text-zinc-950">
-              No components yet
-            </h2>
+        <h1 className="mt-2 text-[28px] font-bold tracking-tight text-zinc-950 dark:text-white">
+          {pageTitle}
+        </h1>
 
-            <p className="mt-2 text-sm text-zinc-500">
-              Components for this category will be added later.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-14">
-            {Object.entries(groupedComponents).map(
-              ([categoryName, categoryComponents]) => (
-                <section key={categoryName}>
-                  <div className="mb-5 flex items-end justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold text-zinc-950">
-                        {categoryName}
-                      </h2>
+        <p className="mt-2 max-w-2xl text-[13px] leading-5 text-zinc-500 dark:text-zinc-400">
+          Explore{" "}
+          {activeCategory ? activeCategory.name.toLowerCase() : "all available"}{" "}
+          components. Click a component to inspect its preview, TypeScript,
+          Tailwind CSS and JavaScript.
+        </p>
 
-                      <p className="mt-1 text-sm text-zinc-500">
-                        Explore available {categoryName.toLowerCase()}.
-                      </p>
-                    </div>
+        <div className="mt-4 flex items-center gap-2">
+          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-medium text-blue-600 dark:bg-blue-500/10 dark:text-blue-300">
+            {filteredComponents.length} components
+          </span>
 
-                    <span className="text-sm text-zinc-400">
-                      {categoryComponents.length} components
-                    </span>
-                  </div>
+          <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-medium text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+            React
+          </span>
 
-                  <div className="grid grid-cols-1 gap-x-5 gap-y-8 md:grid-cols-2 xl:grid-cols-3">
-                    {categoryComponents.map((component) => (
-                      <ComponentCard
-                        key={component.id}
-                        component={component}
-                        onClick={() =>
-                          setSelectedComponent(component)
-                        }
-                      />
-                    ))}
-                  </div>
-                </section>
-              ),
-            )}
-          </div>
-        )}
+          <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-medium text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+            TypeScript
+          </span>
+        </div>
       </div>
 
-      <ComponentModal
-        component={selectedComponent}
-        onClose={() => setSelectedComponent(null)}
-      />
-    </>
+      <div className="grid grid-cols-1 gap-x-3.5 gap-y-7 sm:grid-cols-2 md:grid-cols-3">
+        {filteredComponents.map((component) => (
+          <ComponentCard
+            key={component.id}
+            component={component}
+            onClick={() => openComponent(component)}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 

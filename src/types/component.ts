@@ -8,4 +8,5 @@ export type UIComponent = {
   preview: ReactNode;
   typescript: string;
   tailwind: string;
+  javascript?: string;
 };
