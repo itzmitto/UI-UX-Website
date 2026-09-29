@@ -22,6 +22,7 @@ import { navigation } from "./navigation";
 import { overlays } from "./overlays";
 import { pagination } from "./pagination";
 import { precisionRangeSlider } from "./precisionRangeSlider";
+import { productGalleries } from "./productGalleries";
 import { progressBars } from "./progressBars";
 import { radioButtons } from "./radioButtons";
 import { sidebars } from "./sidebars";
@@ -60,6 +61,7 @@ export const components = [
   ...layouts,
   ...kanbanBoards,
   ...checkouts,
+  ...productGalleries,
 ];
 
 export function slugifyCategory(
